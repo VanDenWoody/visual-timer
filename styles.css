@@ -1,0 +1,331 @@
+:root {
+  --time-left: #f44336;
+  --overtime: #8b1a1a;
+  --flash: #ffcdd2;
+  --ink: #757575;
+  --bg: #ffffff;
+}
+
+/* SVG elements have no built-in [hidden] rule. */
+[hidden] {
+  display: none !important;
+}
+
+html,
+body {
+  margin: 0;
+  height: 100%;
+  overflow: hidden;
+  background: var(--bg);
+}
+
+body {
+  display: flex;
+  flex-direction: column;
+  user-select: none;
+  -webkit-user-select: none;
+}
+
+/* With Window Controls Overlay this strip is where the title bar was: it holds the
+   system buttons and lets you drag the window. Without it, it is 0 px. */
+.titlebar {
+  flex: 0 0 env(titlebar-area-height, 0px);
+  app-region: drag;
+  -webkit-app-region: drag;
+}
+
+/* The stage holds the dial and moves with it into the Picture-in-Picture window. */
+#stage {
+  position: relative;
+  flex: 1 1 auto;
+  display: flex;
+  min-height: 0;
+}
+
+#dial {
+  flex: 1 1 auto;
+  display: block;
+  width: 100%;
+  min-height: 0;
+  touch-action: none;
+  cursor: pointer;
+}
+
+.tick {
+  stroke: var(--ink);
+  stroke-width: 1.5;
+}
+
+.tick.major {
+  stroke-width: 3;
+}
+
+.label {
+  fill: var(--ink);
+  font: 12px system-ui, sans-serif;
+  text-anchor: middle;
+  dominant-baseline: central;
+}
+
+/* Outline of the time you started with; the shrinking fill covers it until time passes. */
+.planned {
+  fill: none;
+  stroke: var(--time-left);
+  stroke-width: 1.5px;
+  stroke-linejoin: round;
+  vector-effect: non-scaling-stroke;
+}
+
+.time-left {
+  fill: var(--time-left);
+}
+
+.overtime {
+  fill: var(--overtime);
+}
+
+#centre {
+  cursor: pointer;
+  outline: none;
+}
+
+.centre-bg {
+  fill: #ffffff;
+  stroke: #e0e0e0;
+  stroke-width: 1.5;
+}
+
+#centre:focus-visible .centre-bg {
+  stroke: var(--ink);
+  stroke-width: 2.5;
+}
+
+.icon {
+  fill: var(--time-left);
+}
+
+.centre-label {
+  fill: var(--overtime);
+  font: bold 14px system-ui, sans-serif;
+  text-anchor: middle;
+  dominant-baseline: central;
+}
+
+.corner-button {
+  z-index: 1;
+  width: 24px;
+  height: 24px;
+  padding: 0;
+  border: 1px solid #e0e0e0;
+  border-radius: 4px;
+  background: var(--bg);
+  color: var(--ink);
+  font: 14px/1 system-ui, sans-serif;
+  cursor: pointer;
+  app-region: no-drag;
+  -webkit-app-region: no-drag;
+}
+
+/* Outside the stage: these stay in the main window when the dial pops out. */
+.corner-group {
+  position: fixed;
+  z-index: 1;
+  top: calc(env(titlebar-area-height, 0px) + 4px);
+  left: 4px;
+  display: flex;
+  gap: 4px;
+}
+
+/* Inside the stage, below the title bar, so it moves into the Picture-in-Picture window. */
+.restart {
+  position: absolute;
+  top: 4px;
+  right: 4px;
+  border-color: transparent;
+}
+
+.restart:hover,
+.restart:focus-visible {
+  border-color: #e0e0e0;
+}
+
+.popped-note {
+  display: none;
+  margin: auto;
+  padding: 8px;
+  color: var(--ink);
+  font: 13px system-ui, sans-serif;
+  text-align: center;
+}
+
+body.popped-out .popped-note {
+  display: block;
+}
+
+body.popped-out .pop-out {
+  display: none;
+}
+
+/* The whole window flashes, whichever window currently holds the stage. */
+body:has(> #stage.flashing) {
+  animation: flash 1s steps(1, end) infinite;
+}
+
+@keyframes flash {
+  0% {
+    background: var(--bg);
+  }
+  50% {
+    background: var(--flash);
+  }
+}
+
+/* The sound panel. The dialog itself has no padding, so a click on it is a click on the backdrop. */
+.sound-dialog {
+  width: min(340px, calc(100vw - 16px));
+  max-height: calc(100vh - 16px);
+  overflow: auto;
+  padding: 0;
+  border: 1px solid #e0e0e0;
+  border-radius: 8px;
+  color: #212121;
+  font: 14px/1.4 system-ui, sans-serif;
+  user-select: none;
+  -webkit-user-select: none;
+}
+
+.sound-dialog::backdrop {
+  background: rgb(0 0 0 / 0.25);
+}
+
+.sound-panel {
+  padding: 4px 14px 14px;
+}
+
+.sound-panel header {
+  position: sticky;
+  top: 0;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 8px 0;
+  background: var(--bg);
+}
+
+.sound-panel h2 {
+  margin: 0;
+  font-size: 16px;
+}
+
+.sound-panel h3 {
+  margin: 12px 0 4px;
+  color: var(--ink);
+  font-size: 12px;
+  font-weight: 600;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+}
+
+.sound-panel button {
+  border: 1px solid #e0e0e0;
+  border-radius: 4px;
+  background: var(--bg);
+  color: #212121;
+  font: inherit;
+  cursor: pointer;
+}
+
+.sound-panel .close {
+  width: 28px;
+  height: 28px;
+  font-size: 18px;
+  line-height: 1;
+}
+
+.sound-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  padding: 2px 0;
+}
+
+.sound-row label {
+  flex: 1 1 auto;
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  cursor: pointer;
+}
+
+.sound-row input {
+  accent-color: var(--time-left);
+}
+
+.sound-row .play {
+  flex: none;
+  width: 28px;
+  height: 24px;
+  color: var(--time-left);
+  font-size: 11px;
+}
+
+.volume {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 4px 0 10px;
+  border-bottom: 1px solid #e0e0e0;
+}
+
+.volume input {
+  flex: 1 1 auto;
+  min-width: 0;
+  accent-color: var(--time-left);
+}
+
+.volume output {
+  flex: none;
+  width: 3.5em;
+  color: var(--ink);
+  text-align: right;
+  font-variant-numeric: tabular-nums;
+}
+
+.custom {
+  padding-bottom: 8px;
+  border-bottom: 1px solid #e0e0e0;
+}
+
+.custom h3 {
+  margin-top: 4px;
+}
+
+.custom-actions {
+  display: flex;
+  gap: 8px;
+  margin: 6px 0;
+}
+
+.custom-actions button {
+  padding: 4px 10px;
+}
+
+.hint {
+  margin: 4px 0;
+  color: var(--ink);
+  font-size: 12px;
+}
+
+.message {
+  margin: 4px 0;
+  color: var(--overtime);
+  font-size: 13px;
+}
+
+@media (max-width: 159px), (max-height: 159px) {
+  .label {
+    display: none;
+  }
+}
