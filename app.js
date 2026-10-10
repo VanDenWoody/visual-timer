@@ -235,6 +235,7 @@ watchKeys();
 // Moving the stage between windows can drop the pointer capture without any event on the dial.
 setupPip({
   button: document.getElementById("pop-out"),
+  unavailableMessage: document.getElementById("pip-unavailable"),
   stage,
   onMove: () => {
     endDrag();

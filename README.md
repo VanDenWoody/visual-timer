@@ -59,8 +59,12 @@ site's address) and cannot be styled. Close the Picture-in-Picture window to
 bring the dial back.
 
 The timer itself runs in the main window: minimise it, but do not close it,
-because closing it also closes the Picture-in-Picture window. The ⧉ button only
-appears in browsers that support Document Picture-in-Picture (Chrome and Edge).
+because closing it also closes the Picture-in-Picture window. This feature requires
+Document Picture-in-Picture, available in supported desktop Chrome and Edge browsers.
+In unsupported browsers, including Chrome on Android, the ⧉ button stays visible
+but disabled, with a message explaining that Picture-in-Picture is unavailable.
+The timer still works in the main window. Android's Chrome PiP permission is for
+video PiP and does not enable Document Picture-in-Picture.
 
 ## Controls
 
@@ -78,8 +82,9 @@ restarts it from the full planned minutes.
 
     npm test
 
-Runs `node --test` over the pure modules `dial.js`, `timer.js` and
-`sounds.js`. No `npm install` required. The sound tests use a stand-in for the
+Runs `node --test` over `dial.js`, `timer.js`, `sounds.js` and the PiP behavior.
+No `npm install` required. The PiP tests use stand-ins for the browser APIs.
+The sound tests use a stand-in for the
 Web Audio API: they check that every sound plays without error and falls silent
 within its stated duration, not how it sounds.
 

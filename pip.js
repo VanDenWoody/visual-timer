@@ -1,9 +1,12 @@
 // Moves the timer into a Document Picture-in-Picture window, which Chrome keeps
 // on top of other windows, and back again when that window closes.
 
-export function setupPip({ button, stage, onMove }) {
+export function setupPip({ button, stage, onMove, unavailableMessage }) {
   if (!("documentPictureInPicture" in window)) {
-    button.hidden = true;
+    button.disabled = true;
+    button.title = unavailableMessage.textContent;
+    button.setAttribute("aria-describedby", unavailableMessage.id);
+    unavailableMessage.hidden = false;
     return;
   }
 
