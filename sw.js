@@ -1,4 +1,4 @@
-const CACHE_NAME = "visual-timer-v10";
+const CACHE_NAME = "visual-timer-v11";
 
 const ASSETS = [
   "./",

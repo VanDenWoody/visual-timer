@@ -126,6 +126,18 @@ body {
   -webkit-app-region: no-drag;
 }
 
+.corner-button:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.pip-unavailable {
+  flex: none;
+  margin: 36px 8px 4px;
+  color: var(--ink);
+  font: 13px/1.4 system-ui, sans-serif;
+}
+
 /* Outside the stage: these stay in the main window when the dial pops out. */
 .corner-group {
   position: fixed;
