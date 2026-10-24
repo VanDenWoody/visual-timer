@@ -1,10 +1,12 @@
 // The desktop shell around the web app: a tray icon, closing hides to the tray,
 // and minimising (or the pop-out button) turns the window into a borderless
-// overlay that stays on top of other windows. The overlay's size and place are
+// overlay that stays on top of other windows, also other always-on-top ones. The overlay's size and place are
 // remembered, also across restarts.
 
 #[cfg(windows)]
 mod shape;
+#[cfg(windows)]
+mod topmost;
 
 use std::{fs, path::PathBuf, sync::Mutex};
 
@@ -25,6 +27,11 @@ const OVERLAY_MARGIN: f64 = 16.0;
 fn lock_shape(_locked: bool) {
     #[cfg(windows)]
     shape::lock(_locked);
+}
+
+fn keep_on_top(_on: bool) {
+    #[cfg(windows)]
+    topmost::keep_on_top(_on);
 }
 
 // Where the overlay was last and how big, kept in overlay.json in the app's config folder.
@@ -133,6 +140,7 @@ fn set_compact(app: &AppHandle, compact: bool) -> tauri::Result<()> {
         window.set_decorations(false)?;
         window.set_skip_taskbar(true)?;
         window.set_always_on_top(true)?;
+        keep_on_top(true);
         // A maximised or double-clicked overlay would lose its shape.
         window.set_maximizable(false)?;
         lock_shape(true);
@@ -143,6 +151,7 @@ fn set_compact(app: &AppHandle, compact: bool) -> tauri::Result<()> {
         let (position, size) = layout.full.take().unwrap();
         lock_shape(false);
         window.set_maximizable(true)?;
+        keep_on_top(false);
         window.set_always_on_top(false)?;
         window.set_skip_taskbar(false)?;
         window.set_decorations(true)?;
@@ -205,9 +214,9 @@ pub fn run() {
             #[cfg(windows)]
             {
                 let handle = app.handle().clone();
-                shape::install(main_window(app.handle()).hwnd()?.0 as isize, move || {
-                    remember_overlay(&handle)
-                });
+                let hwnd = main_window(app.handle()).hwnd()?.0 as isize;
+                shape::install(hwnd, move || remember_overlay(&handle));
+                topmost::install(hwnd);
             }
             let show = MenuItem::with_id(app, "show", "Show timer", true, None::<&str>)?;
             let overlay = MenuItem::with_id(app, "overlay", "Overlay", true, None::<&str>)?;
