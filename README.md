@@ -42,6 +42,13 @@ play instead, so the timer never ends silently.
 Then open <http://localhost:8000>. Do **not** open `index.html` from the
 filesystem: ES module imports and service workers both require a real origin.
 
+## Windows desktop app
+
+Download `Visual Timer_<version>_x64-setup.exe` from the
+[releases page](https://github.com/VanDenWoody/visual-timer/releases) and run
+it. The installer is not signed, so Windows SmartScreen may warn about it:
+choose **More info → Run anyway**.
+
 ## Install as a desktop app
 
 In Chrome or Edge, open the online address or <http://localhost:8000> and
@@ -108,3 +115,18 @@ npm install
 npm run tauri dev      # run
 npm run tauri build    # installer in src-tauri\target\release\bundle\nsis
 ```
+
+## Release
+
+Set the new version in `package.json`, `src-tauri/Cargo.toml` and
+`src-tauri/tauri.conf.json`, commit, then push a tag with the same version:
+
+    git tag v0.1.0
+    git push origin v0.1.0
+
+The **Release** workflow (`.github/workflows/release.yml`) runs the tests,
+builds the NSIS installer and attaches it to a draft release. Open the draft on
+GitHub, check it and publish it.
+
+To build the installer locally instead, run `npx tauri build`. It writes the
+installer to `src-tauri/target/release/bundle/nsis/`.
