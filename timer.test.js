@@ -76,9 +76,9 @@ test("reset: running, paused and overtime return to idle at the same minutes", (
   assert.equal(fromOvertime.setMinutes, 10);
 });
 
-test("restart: running and paused start over from the full minutes", () => {
+test("restart: running, paused and overtime start over from the full minutes", () => {
   const running = start(createTimer(10), T0);
-  for (const s of [running, pause(running, T0 + MIN)]) {
+  for (const s of [running, pause(running, T0 + MIN), tick(running, T0 + 20 * MIN)]) {
     const restarted = restart(s, T0 + 3 * MIN);
     assert.equal(restarted.status, "running");
     assert.equal(restarted.setMinutes, 10);
@@ -86,11 +86,9 @@ test("restart: running and paused start over from the full minutes", () => {
   }
 });
 
-test("restart: idle and overtime are unchanged", () => {
+test("restart: idle is unchanged", () => {
   const idle = createTimer(10);
   assert.equal(restart(idle, T0), idle);
-  const overtime = tick(start(idle, T0), T0 + 20 * MIN);
-  assert.equal(restart(overtime, T0), overtime);
 });
 
 test("setMinutes: idle, paused and overtime become idle with the new value", () => {

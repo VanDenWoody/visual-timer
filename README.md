@@ -71,8 +71,8 @@ appears in browsers that support Document Picture-in-Picture (Chrome and Edge).
 | Paused   | Set new minutes (reset) | Resume                                                                              |
 | Overtime | Set new minutes         | Stop and reset                                                                      |
 
-While the timer runs or is paused, the ↺ button in the top-right corner
-restarts it from the full planned minutes.
+While the timer runs, is paused or is in overtime, the ↺ button in the
+top-right corner restarts it from the full planned minutes.
 
 ## Test
 

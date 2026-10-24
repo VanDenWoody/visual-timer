@@ -46,9 +46,9 @@ export function reset(state) {
   return createTimer(state.setMinutes);
 }
 
-// Running or paused: start over from the full planned minutes.
+// Running, paused or overtime: start over from the full planned minutes.
 export function restart(state, now) {
-  if (state.status !== "running" && state.status !== "paused") return state;
+  if (state.status === "idle") return state;
   return start(createTimer(state.setMinutes), now);
 }
 

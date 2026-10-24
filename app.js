@@ -92,8 +92,7 @@ function render(now = Date.now()) {
   iconPlay.toggleAttribute("hidden", status === "running" || status === "overtime");
   iconPause.toggleAttribute("hidden", status !== "running");
   centreLabel.toggleAttribute("hidden", status !== "overtime");
-  // Overtime already resets through the centre.
-  restartButton.hidden = status !== "running" && status !== "paused";
+  restartButton.hidden = status === "idle";
   if (status === "overtime") {
     const text = overtimeLabel(overtimeMs(state, now));
     if (centreLabel.textContent !== text) centreLabel.textContent = text;
