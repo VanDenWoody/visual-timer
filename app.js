@@ -197,8 +197,17 @@ function watchKeys() {
   });
 }
 
+// Once time ran out, a press anywhere on the stage stops the alarm and returns to
+// the planned minutes, instead of setting new ones. Restart keeps its own meaning.
+stage.addEventListener("pointerdown", (event) => {
+  if (event.button !== 0 || state.status !== "overtime") return;
+  if (centre.contains(event.target) || restartButton.contains(event.target)) return;
+  apply(reset(state));
+});
+
 dial.addEventListener("pointerdown", (event) => {
-  if (event.button !== 0 || centre.contains(event.target) || state.status === "running") return;
+  if (event.button !== 0 || centre.contains(event.target)) return;
+  if (state.status === "running" || state.status === "overtime") return;
   dragging = true;
   dial.setPointerCapture(event.pointerId);
   apply(setMinutes(state, minutesAt(event)));
