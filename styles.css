@@ -115,15 +115,54 @@ body {
   z-index: 1;
   width: 24px;
   height: 24px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
   padding: 0;
-  border: 1px solid #e0e0e0;
+  border: none;
   border-radius: 4px;
-  background: var(--bg);
+  background: transparent;
   color: var(--ink);
-  font: 14px/1 system-ui, sans-serif;
   cursor: pointer;
   app-region: no-drag;
   -webkit-app-region: no-drag;
+}
+
+.corner-button:hover,
+.corner-button:focus-visible {
+  background: rgb(0 0 0 / 0.06);
+  color: #212121;
+}
+
+.corner-button:focus-visible {
+  outline: 2px solid var(--ink);
+  outline-offset: -2px;
+}
+
+.glyph {
+  width: 16px;
+  height: 16px;
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 2;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+.glyph.solid,
+.glyph .solid {
+  fill: currentColor;
+  stroke: none;
+}
+
+/* The pop-out button shows where it takes you: the overlay, or back to the full window. */
+.full-glyph,
+body.compact .pip-glyph {
+  display: none;
+}
+
+body.compact .full-glyph {
+  display: block;
 }
 
 /* Outside the stage: these stay in the main window when the dial pops out. */
@@ -141,12 +180,6 @@ body {
   position: absolute;
   top: 4px;
   right: 4px;
-  border-color: transparent;
-}
-
-.restart:hover,
-.restart:focus-visible {
-  border-color: #e0e0e0;
 }
 
 .popped-note {
@@ -195,6 +228,17 @@ body.compact.on-grip #dial {
 
 body.compact #sound-button {
   display: none;
+}
+
+/* In the overlay the buttons stay out of sight until the pointer is over the window. */
+body.compact .corner-button {
+  opacity: 0;
+  transition: opacity 0.15s;
+}
+
+body.compact:hover .corner-button,
+body.compact .corner-button:focus-visible {
+  opacity: 1;
 }
 
 /* The whole window flashes, whichever window currently holds the stage. */

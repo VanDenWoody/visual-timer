@@ -12,12 +12,19 @@
   <body>
     <div class="titlebar"></div>
     <div class="corner-group">
-      <button id="pop-out" class="corner-button pop-out" type="button" title="Pop out: always on top" aria-label="Pop out">⧉</button>
-      <button id="sound-button" class="corner-button" type="button" title="Alarm sound" aria-label="Alarm sound">♪</button>
+      <button id="pop-out" class="corner-button pop-out" type="button" title="Pop out: always on top" aria-label="Pop out">
+        <svg class="glyph pip-glyph" viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="5" width="18" height="14" rx="2"></rect><rect class="solid" x="12" y="11" width="6" height="5" rx="1"></rect></svg>
+        <svg class="glyph full-glyph" viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="5" width="18" height="14" rx="2"></rect><path d="M14 14 10 10M10 14v-4h4"></path></svg>
+      </button>
+      <button id="sound-button" class="corner-button" type="button" title="Alarm sound" aria-label="Alarm sound">
+        <svg class="glyph" viewBox="0 0 24 24" aria-hidden="true"><path d="M9 18V5l11-2v13"></path><circle cx="6" cy="18" r="3"></circle><circle cx="17" cy="16" r="3"></circle></svg>
+      </button>
     </div>
     <p class="popped-note">The timer is in the picture-in-picture window. Close that window to bring it back.</p>
     <main id="stage">
-      <button id="restart" class="corner-button restart" type="button" title="Restart" aria-label="Restart" hidden>↺</button>
+      <button id="restart" class="corner-button restart" type="button" title="Restart" aria-label="Restart" hidden>
+        <svg class="glyph solid" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 4a8 8 0 1 1-7.7 10h2.1A6 6 0 1 0 12 6v3L7 5l5-4z"></path></svg>
+      </button>
       <svg id="dial" viewBox="0 0 240 240" preserveAspectRatio="xMidYMid meet" aria-label="Timer dial">
         <g id="face"></g>
         <path id="planned" class="planned" d=""></path>
