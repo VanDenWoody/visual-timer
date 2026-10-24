@@ -25,6 +25,7 @@ const iconPlay = document.getElementById("icon-play");
 const iconPause = document.getElementById("icon-pause");
 const centreLabel = document.getElementById("centre-label");
 const restartButton = document.getElementById("restart");
+const soundDialog = document.getElementById("sound-dialog");
 
 const alarm = createAlarm({ flashTarget: stage });
 
@@ -33,6 +34,7 @@ let endTimer = null;
 let dragging = false;
 let frameWindow = window;
 let frameId = 0;
+let updateReady = false;
 
 function loadMinutes() {
   try {
@@ -118,6 +120,7 @@ function apply(next) {
   stage.classList.toggle("running", state.status === "running");
   scheduleEnd();
   render();
+  reloadIfUpdated();
 }
 
 function onCentre() {
@@ -158,6 +161,7 @@ function endDrag() {
   if (!dragging) return;
   dragging = false;
   saveMinutes(state.setMinutes);
+  reloadIfUpdated();
 }
 
 centre.addEventListener("click", onCentre);
@@ -239,19 +243,47 @@ setupPip({
     endDrag();
     startFrames();
     watchKeys();
+    reloadIfUpdated();
   },
 });
 
 setupSoundPicker({
   button: document.getElementById("sound-button"),
-  dialog: document.getElementById("sound-dialog"),
+  dialog: soundDialog,
   alarm,
 });
+// Closing the sound panel in idle is a safe moment for a waiting reload.
+soundDialog.addEventListener("close", reloadIfUpdated);
+
+// The page on screen was served from the old cache, so a new version only
+// shows after a reload. A reload loses a running countdown, a popped-out dial
+// and an open sound panel, so it waits until the timer is idle in the main window.
+function reloadIfUpdated() {
+  if (!updateReady || dragging || state.status !== "idle") return;
+  if (stage.ownerDocument !== document || soundDialog.open) return;
+  window.location.reload();
+}
 
 if ("serviceWorker" in navigator) {
+  // A first install has no previous controller and needs no reload.
+  const hadController = navigator.serviceWorker.controller !== null;
+  navigator.serviceWorker.addEventListener("controllerchange", () => {
+    updateReady = hadController;
+    reloadIfUpdated();
+  });
+
   window.addEventListener("load", () => {
-    navigator.serviceWorker.register("./sw.js").catch(() => {
-      // Not a secure context, or the browser refused. The app works regardless.
-    });
+    navigator.serviceWorker
+      .register("./sw.js")
+      .then((registration) => {
+        // An installed app is resumed rather than reopened, so the browser's own
+        // update check on load rarely runs. Ask on every return.
+        document.addEventListener("visibilitychange", () => {
+          if (document.visibilityState === "visible") registration.update().catch(() => {});
+        });
+      })
+      .catch(() => {
+        // Not a secure context, or the browser refused. The app works regardless.
+      });
   });
 }

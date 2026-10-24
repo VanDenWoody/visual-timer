@@ -1,4 +1,4 @@
-const CACHE_NAME = "visual-timer-v10";
+const CACHE_NAME = "visual-timer-v11";
 
 const ASSETS = [
   "./",
@@ -19,6 +19,9 @@ const ASSETS = [
 
 self.addEventListener("install", (event) => {
   event.waitUntil(
+    // cache: "reload" skips the browser's HTTP cache. GitHub Pages lets files be
+    // cached for ten minutes, so without it a new version could be filled with
+    // the old files and then serve them until the next release.
     caches
       .open(CACHE_NAME)
       .then((cache) => cache.addAll(ASSETS.map((url) => new Request(url, { cache: "reload" }))))
