@@ -1,0 +1,7 @@
+{
+  "$schema": "../gen/schemas/desktop-schema.json",
+  "identifier": "default",
+  "description": "The timer window: events for the overlay switch and dragging the borderless overlay.",
+  "windows": ["main"],
+  "permissions": ["core:default", "core:window:allow-start-dragging"]
+}

@@ -4,6 +4,7 @@ import {
   pause, remainingMs, reset, restart, resume, setMinutes, start, tick,
 } from "./timer.js";
 import { createAlarm } from "./alarm.js";
+import { setupDesktop } from "./desktop.js";
 import { setupPip } from "./pip.js";
 import { setupSoundPicker } from "./sound-picker.js";
 
@@ -28,6 +29,14 @@ const restartButton = document.getElementById("restart");
 const soundDialog = document.getElementById("sound-dialog");
 
 const alarm = createAlarm({ flashTarget: stage });
+const popOutButton = document.getElementById("pop-out");
+// Null in the browser, where Picture-in-Picture does the popping out.
+const desktop = setupDesktop({
+  button: popOutButton,
+  titlebar: document.querySelector(".titlebar"),
+  stage,
+  dial,
+});
 
 let state = createTimer(loadMinutes());
 let endTimer = null;
@@ -115,7 +124,10 @@ function scheduleEnd() {
 function apply(next) {
   const wasOvertime = state.status === "overtime";
   state = next;
-  if (!wasOvertime && state.status === "overtime") alarm.start();
+  if (!wasOvertime && state.status === "overtime") {
+    alarm.start();
+    desktop?.reveal();
+  }
   if (state.status !== "overtime") alarm.stop();
   stage.classList.toggle("running", state.status === "running");
   scheduleEnd();
@@ -245,16 +257,18 @@ apply(state);
 startFrames();
 watchKeys();
 // Moving the stage between windows can drop the pointer capture without any event on the dial.
-setupPip({
-  button: document.getElementById("pop-out"),
-  stage,
-  onMove: () => {
-    endDrag();
-    startFrames();
-    watchKeys();
-    reloadIfUpdated();
-  },
-});
+if (!desktop) {
+  setupPip({
+    button: popOutButton,
+    stage,
+    onMove: () => {
+      endDrag();
+      startFrames();
+      watchKeys();
+      reloadIfUpdated();
+    },
+  });
+}
 
 setupSoundPicker({
   button: document.getElementById("sound-button"),
@@ -273,7 +287,8 @@ function reloadIfUpdated() {
   window.location.reload();
 }
 
-if ("serviceWorker" in navigator) {
+// The desktop app ships its files with it, so it has nothing to cache or update.
+if ("serviceWorker" in navigator && !desktop) {
   // A first install has no previous controller and needs no reload.
   const hadController = navigator.serviceWorker.controller !== null;
   navigator.serviceWorker.addEventListener("controllerchange", () => {

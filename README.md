@@ -92,3 +92,19 @@ the online version through GitHub Pages within about a minute.
 
 - An app installed from localhost needs the local server running when the installed app is next opened, so the new service worker can fetch the files.
 - The first launch after a bump still shows the old version while the new service worker installs in the background. The new version appears on the next launch.
+
+## Desktop app (Windows, Tauri)
+
+`src-tauri/` wraps the same web files in a Tauri window with a tray icon:
+
+- **Minimise** or the pop-out button turns the window into a borderless overlay that stays on top, bottom right. Move it by dragging the strip on top or the empty corners around the dial, the running dial itself, or anywhere with Alt held. Resize it from any edge; it stays square. The button brings the full window back.
+- The overlay remembers its size and place, also after a restart, in `%APPDATA%\com.usoft.visualtimer\overlay.json`. **Reset overlay size** in the tray menu goes back to the default (240 px, bottom right).
+- **Close** hides the window to the tray; the timer keeps running. When time runs out the window comes back. **Quit** is in the tray menu.
+
+Needs Rust (stable MSVC) and the WebView2 runtime.
+
+```powershell
+npm install
+npm run tauri dev      # run
+npm run tauri build    # installer in src-tauri\target\release\bundle\nsis
+```

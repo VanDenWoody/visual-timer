@@ -1,4 +1,4 @@
-const CACHE_NAME = "visual-timer-v11";
+const CACHE_NAME = "visual-timer-v12";
 
 const ASSETS = [
   "./",
@@ -12,6 +12,7 @@ const ASSETS = [
   "./sound-store.js",
   "./sound-picker.js",
   "./pip.js",
+  "./desktop.js",
   "./manifest.json",
   "./icons/icon-192.png",
   "./icons/icon-512.png",

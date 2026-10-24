@@ -166,6 +166,37 @@ body.popped-out .pop-out {
   display: none;
 }
 
+/* The desktop overlay: a borderless window with a thin strip on top to drag it by. */
+body.compact {
+  box-sizing: border-box;
+  border: 1px solid #e0e0e0;
+}
+
+body.compact .titlebar {
+  flex-basis: 14px;
+  cursor: move;
+}
+
+/* Both corner buttons sit 4px inside the 1px border: the stage starts below the
+   strip, so Restart moves up by its height; the fixed group ignores the border. */
+body.compact .restart {
+  top: calc(4px - 14px);
+}
+
+body.compact .corner-group {
+  top: 5px;
+  left: 5px;
+}
+
+/* Outside the dial the overlay moves instead of setting minutes. */
+body.compact.on-grip #dial {
+  cursor: move;
+}
+
+body.compact #sound-button {
+  display: none;
+}
+
 /* The whole window flashes, whichever window currently holds the stage. */
 body:has(> #stage.flashing) {
   animation: flash 1s steps(1, end) infinite;
